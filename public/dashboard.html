@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dashboard</h1>
+            <button id="logout-button" class="btn btn-primary">Logout</button>
+        </header>
+
+        <div class="main-content">
+            <button id="add-data-button" class="btn btn-secondary">Add Data</button>
+
+            <table id="data-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Data</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <label for="edit-name">Name:</label>
+                <input type="text" id="edit-name" required>
+                <label for="edit-subject">Subject:</label>
+                <input type="text" id="edit-subject" required>
+                <label for="edit-marks">Marks:</label>
+                <input type="number" min="0" id="edit-marks" required>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-add">&times;</span>
+            <h2>Add Data</h2>
+            <form id="add-form">
+                <label for="add-name">Name:</label>
+                <input type="text" id="add-name" required>
+                <label for="add-subject">Subject:</label>
+                <input type="text" id="add-subject" required>
+                <label for="add-marks">Marks:</label>
+                <input type="number" min="0" id="add-marks" required>
+                <button type="submit" class="btn btn-secondary">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script>
+        (async function() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/index.html';
+            } else {
+                try {
+                    const response = await fetch('/api/data', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token
+                        }
+                    });
+                    if (response.status === 401) {
+                        window.location.href = '/index.html';
+                    }
+                } catch (error) {
+                    window.location.href = '/index.html';
+                }
+            }
+        })();
+    </script>
+</body>
+</html>
